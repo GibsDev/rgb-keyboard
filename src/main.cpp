@@ -6,18 +6,18 @@
 // Cherry MX debounce time (ms)
 #define DEBOUNCE_TIME 5
 
-//unsigned char ROW_PINS[] = { 33, 34, 35, 36, 37, 38 };
-unsigned const int ROW_PINS[] = { 3, 2 };
+unsigned char ROW_PINS[] = { 33, 34, 35, 36, 37, 38 };
+//unsigned const int ROW_PINS[] = { 3, 2 };
 unsigned const int ROW_COUNT = sizeof(ROW_PINS) / sizeof(ROW_PINS[0]);
-//unsigned char COL_PINS[] = { 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 14, 15, 16, 17 };
-unsigned const int COL_PINS[] = { 5, 4 };
+unsigned char COL_PINS[] = { 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 14, 15, 16, 17 };
+//unsigned const int COL_PINS[] = { 5, 4 };
 unsigned const int COL_COUNT = sizeof(COL_PINS) / sizeof(COL_PINS[0]);
 
-bool key_states[ROW_COUNT * COL_COUNT]; // 1D array of states, 1 = pressed
+bool key_states[ROW_COUNT * COL_COUNT]; // 1D array of states, 0 = pressed
 unsigned long key_times[ROW_COUNT * COL_COUNT]; // 1D array of last update per key (for debounce time)
 
 void onKeyPressed(int row, int col, int index) {
-
+	Serial.printf("row: %d, col: %d\n", row, col);
 }
 
 void onKeyReleased(int row, int col, int index) {
@@ -29,19 +29,20 @@ void readKeys () {
 	for (unsigned char col = 0; col < COL_COUNT; col++) {
 		for (unsigned char row = 0; row < ROW_COUNT; row++) {
 			digitalWrite(ROW_PINS[row], LOW); // Enable GND for this row
+			//delayMicroseconds(2);
 			bool key_state = digitalRead(COL_PINS[col]); // HIGH or 1 if button not pressed
-			bool pressed = !key_state; // Inverse of key_state, true if button pressed
 			unsigned long now = millis();
-			if (pressed != key_states[index] && now - key_times[index] >= DEBOUNCE_TIME) {
+			if (key_state != key_states[index] && now - key_times[index] >= DEBOUNCE_TIME) {
 				key_times[index] = now; // Update last change time
 				key_states[index] = key_state; // Update key state
-				if (pressed) {
+				if (!key_state) {
 					onKeyPressed(row, col, index);
 				} else {
 					onKeyReleased(row, col, index);
 				}
 			}
 			digitalWrite(ROW_PINS[row], HIGH); // Disable GND for this row
+			delayMicroseconds(1);
 			index++;
 		}
 	}
@@ -55,6 +56,9 @@ void setup() {
 	for (unsigned char row = 0; row < ROW_COUNT; row++) {
 		pinMode(ROW_PINS[row], OUTPUT);
 		digitalWrite(ROW_PINS[row], HIGH);
+	}
+	for (int i = 0; i < ROW_COUNT * COL_COUNT; i++) {
+		key_states[i] = 1;
 	}
 }
 
@@ -74,6 +78,6 @@ void loop() {
 		debug();
 		outputtimer = millis();
 	}
-	delay(100);
+	delay(5);
 }
 
