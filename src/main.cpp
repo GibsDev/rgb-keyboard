@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include "backlight.h"
 
+#include "Keys.h"
+
 #define DEBUG_LOOP_ENABLED 1
 #define DEBUG_LOOP_TIMER 1000
 // Cherry MX debounce time (ms)
@@ -16,14 +18,6 @@ unsigned const int COL_COUNT = sizeof(COL_PINS) / sizeof(COL_PINS[0]);
 bool key_states[ROW_COUNT * COL_COUNT]; // 1D array of states, 0 = pressed
 unsigned long key_times[ROW_COUNT * COL_COUNT]; // 1D array of last update per key (for debounce time)
 
-void onKeyPressed(int row, int col, int index) {
-	Serial.printf("row: %d, col: %d\n", row, col);
-}
-
-void onKeyReleased(int row, int col, int index) {
-	
-}
-
 void readKeys () {
 	int index = 0; // 1 dimensional index of current key
 	for (unsigned char col = 0; col < COL_COUNT; col++) {
@@ -36,9 +30,9 @@ void readKeys () {
 				key_times[index] = now; // Update last change time
 				key_states[index] = key_state; // Update key state
 				if (!key_state) {
-					onKeyPressed(row, col, index);
+					onKeyPressed(row, col);
 				} else {
-					onKeyReleased(row, col, index);
+					onKeyReleased(row, col);
 				}
 			}
 			digitalWrite(ROW_PINS[row], HIGH); // Disable GND for this row
@@ -57,7 +51,7 @@ void setup() {
 		pinMode(ROW_PINS[row], OUTPUT);
 		digitalWrite(ROW_PINS[row], HIGH);
 	}
-	for (int i = 0; i < ROW_COUNT * COL_COUNT; i++) {
+	for (unsigned int i = 0; i < ROW_COUNT * COL_COUNT; i++) {
 		key_states[i] = 1;
 	}
 }
@@ -78,6 +72,6 @@ void loop() {
 		debug();
 		outputtimer = millis();
 	}
-	delay(5);
+	delay(1);
 }
 
