@@ -44,6 +44,7 @@ void readKeys () {
 
 void setup() {
 	backlight_setup();
+	keys_setup();
 	for (unsigned char col = 0; col < COL_COUNT; col++) {
 		pinMode(COL_PINS[col], INPUT_PULLUP);
 	}

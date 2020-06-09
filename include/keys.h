@@ -3,6 +3,15 @@
 #ifndef KEYS_HEADER_GUARD
 #define KEYS_HEADER_GUARD
 
+void keys_setup();
+void volume_up_press();
+void volume_up_release();
+void volume_down_press();
+void volume_down_release();
+void increase_brightness();
+void decrease_brightness();
+void toggle_os();
+
 typedef void (*void_function_t)();
 
 class Key
@@ -13,8 +22,12 @@ public:
 	uint8_t row;
 	uint8_t col_switch;
 	uint8_t col_led;
-	void_function_t function;
+	void_function_t function_press;
+	void_function_t function_release;
 	uint32_t function_color;
+
+	// Used for empty array initialization
+	Key() { this->name = NULL; }
 
 	Key(const char *name, uint16_t keycode, uint8_t row, uint8_t col_switch, uint8_t col_led)
 	{
@@ -23,28 +36,32 @@ public:
 		this->row = row;
 		this->col_switch = col_switch;
 		this->col_led = col_led;
+		this->function_color = 0x000000;
 	}
 
-	void set_function_color(uint32_t color)
-	{
-		this->function_color = color;
+	Key(const char *name, uint16_t keycode, uint8_t row, uint8_t col_switch, uint8_t col_led, void_function_t function_press, void_function_t function_release, uint32_t function_color) {
+		this->name = name;
+		this->keycode = keycode;
+		this->row = row;
+		this->col_switch = col_switch;
+		this->col_led = col_led;
+		this->function_press = function_press;
+		this->function_release = function_release;
+		this->function_color = function_color;
 	}
 
-	void set_function(void_function_t func)
-	{
-		this->function = func;
-	}
-
-	void run_function()
-	{
-		this->function();
+	bool valid() {
+		return this->name != NULL;
 	}
 };
 
 void onKeyPressed(int row, int col);
 void onKeyReleased(int row, int col);
 
+// Function key
 const uint16_t KEY_FUNCTION = (116 | 0xF000);
+// Does not exist
+const uint16_t KEY_DNE = 0;
 
 // Physically available keys
 namespace Keys
@@ -54,7 +71,7 @@ namespace Keys
 	const Key ARROW_DOWN = Key("Arrow Down", KEY_DOWN_ARROW, 0, 15, 8);
 	const Key ARROW_LEFT = Key("Arrow Left", KEY_LEFT_ARROW, 0, 14, 7);
 	const Key ARROW_RIGHT = Key("Arrow Right", KEY_RIGHT_ARROW, 0, 16, 9);
-	const Key ARROW_UP = Key("Arrow Up", KEY_UP_ARROW, 1, 15, 13);
+	const Key ARROW_UP = Key("Arrow Up", KEY_UP_ARROW, 1, 15, 12);
 	const Key BACKSPACE = Key("Backspace", KEY_BACKSPACE, 4, 13, 13);
 	const Key CAPS_LOCK = Key("Caps Lock", KEY_CAPS_LOCK, 2, 0, 0);
 	const Key CTRL_LEFT = Key("Ctrl Left", KEY_LEFT_CTRL, 0, 0, 0);
@@ -75,8 +92,8 @@ namespace Keys
 	const Key F10 = Key("F10", KEY_F10, 5, 12, 10);
 	const Key F11 = Key("F11", KEY_F11, 5, 13, 11);
 	const Key F12 = Key("F12", KEY_F12, 5, 14, 12);
-	const Key PAGE_DOWN = Key("Page Down", KEY_PAGE_DOWN, 3, 16, 15);
-	const Key PAGE_UP = Key("Page Up", KEY_PAGE_UP, 4, 16, 15);
+	const Key PAGE_DOWN = Key("Page Down", KEY_PAGE_DOWN, 3, 16, 15, decrease_brightness, NULL, 0xFFFFFF);
+	const Key PAGE_UP = Key("Page Up", KEY_PAGE_UP, 4, 16, 15, increase_brightness, NULL, 0xFFFFFF);
 	const Key PAUSE = Key("Pause", KEY_PAUSE, 5, 15, 13);
 	const Key PRINT_SCRN = Key("Print Scrn", KEY_PRINTSCREEN, 5, 16, 14);
 	const Key SHIFT_LEFT = Key("Shift", KEY_LEFT_SHIFT, 1, 0, 0);
@@ -120,7 +137,7 @@ namespace Keys
 	const Key NUM_8 = Key("8", KEY_8, 4, 8, 8);
 	const Key NUM_9 = Key("9", KEY_9, 4, 9, 9);
 	const Key APOSTROPHE = Key("Apostrophe (')", KEY_QUOTE, 2, 11, 11);
-	const Key MINUS = Key("Minus (-)", KEY_MINUS, 4, 11, 11);
+	const Key MINUS = Key("Minus (-)", KEY_MINUS, 4, 11, 11, volume_down_press, volume_down_release, 0x00FF00);
 	const Key COMMA = Key("Comma (,)", KEY_COMMA, 1, 9, 8);
 	const Key PERIOD = Key("Period (.)", KEY_PERIOD, 1, 10, 9);
 	const Key FORWARD_SLASH = Key("Forward Slash (/)", KEY_SLASH, 1, 11, 10);
@@ -129,11 +146,19 @@ namespace Keys
 	const Key RIGHT_BRACE = Key("Right Brace (])", KEY_RIGHT_BRACE, 3, 12, 12);
 	const Key BACKSLASH = Key("Backslash (\\)", KEY_BACKSLASH, 3, 13, 13);
 	const Key TILDE = Key("Tilde (`)", KEY_TILDE, 4, 0, 0);
-	const Key EQUALS = Key("Equals (=)", KEY_EQUAL, 4, 12, 12);
-	const Key OS = Key("OS", KEY_LEFT_GUI, 0, 1, 1);
-	const Key FUNCTION = Key("Function", KEY_FUNCTION, 0, 12, 5);
+	const Key EQUALS = Key("Equals (=)", KEY_EQUAL, 4, 12, 12, volume_up_press, volume_up_release, 0x00FF00);
+	const Key OS = Key("OS", KEY_LEFT_GUI, 0, 1, 1, toggle_os, NULL, 0xFF0000);
+	const Key FUNCTION = Key("Function", KEY_FUNCTION, 0, 12, 5, NULL, NULL, 0xFF0000);
 	const Key ALL[83] = {
-		ALT_LEFT, ALT_RIGHT, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, ARROW_UP, BACKSPACE, CAPS_LOCK, CTRL_LEFT, CTRL_RIGHT, INS, DEL, ENTER, ESC, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, PAGE_DOWN, PAGE_UP, PAUSE, PRINT_SCRN, SHIFT_LEFT, SHIFT_RIGHT, SPACE, TAB, A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, NUM_0, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, APOSTROPHE, MINUS, COMMA, PERIOD, FORWARD_SLASH, SEMI_COLON, LEFT_BRACE, RIGHT_BRACE, BACKSLASH, TILDE, EQUALS, OS, FUNCTION};
+		ALT_LEFT, ALT_RIGHT, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, ARROW_UP,
+		BACKSPACE, CAPS_LOCK, CTRL_LEFT, CTRL_RIGHT, INS, DEL, ENTER, ESC,
+		F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, PAGE_DOWN, PAGE_UP,
+		PAUSE, PRINT_SCRN, SHIFT_LEFT, SHIFT_RIGHT, SPACE, TAB, A, B, C, D, E,
+		F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, NUM_0,
+		NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, APOSTROPHE,
+		MINUS, COMMA, PERIOD, FORWARD_SLASH, SEMI_COLON, LEFT_BRACE, RIGHT_BRACE,
+		BACKSLASH, TILDE, EQUALS, OS, FUNCTION};
+	const uint8_t KEY_COUNT = 83;
 	// const Key HOME = Key("Home");
 	// const Key END = Key("End");
 	// const Key NUM_LOCK = Key("Num Lock");
@@ -153,6 +178,6 @@ namespace Keys
 	// const Key NUMPAD_8 = Key("(NumPad) 8");
 	// const Key NUMPAD_9 = Key("(NumPad) 9");
 	// const Key SCROLL_LOCK = Key("Scroll Lock");
-} // namespace keycodes
+} // namespace Keys
 
 #endif

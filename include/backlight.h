@@ -9,8 +9,10 @@ void set_brightness_raw(uint8_t);
 void set_brightness(uint8_t);
 uint8_t get_brightness();
 void set_function_mode(bool);
+void set_os_enabled(bool);
 void set_color(uint32_t);
 uint32_t get_color();
 void set_color(int , int, uint32_t);
+void update_row(int);
 
 #endif
