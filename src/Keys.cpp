@@ -4,11 +4,10 @@
 
 // const Key KEYS[2] = { KeyCodes::ALT, KeyCodes::ARROW_DOWN };
 
-// Function key
-const uint16_t KEY_FUNCTION = (116 | 0xF000);
 // Does not exist
 const uint16_t DNE = 0;
 
+// TODO replace this with codes in the key objects
 // Note: this is vertically inverted compared to the keyboard layout
 const uint16_t PRIMARY_LAYOUT[6][17] = {
     {KEY_LEFT_CTRL, KEY_LEFT_GUI, KEY_LEFT_ALT, DNE, DNE, DNE, KEY_SPACE, DNE, DNE, DNE, DNE, KEY_RIGHT_ALT, KEY_FUNCTION, KEY_RIGHT_CTRL, KEY_LEFT_ARROW, KEY_DOWN_ARROW, KEY_RIGHT_ARROW},
