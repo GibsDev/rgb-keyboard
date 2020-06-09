@@ -75,7 +75,7 @@ namespace Keys
 	const Key BACKSPACE = Key("Backspace", KEY_BACKSPACE, 4, 13, 13);
 	const Key CAPS_LOCK = Key("Caps Lock", KEY_CAPS_LOCK, 2, 0, 0);
 	const Key CTRL_LEFT = Key("Ctrl Left", KEY_LEFT_CTRL, 0, 0, 0);
-	const Key CTRL_RIGHT = Key("Ctrl Right", KEY_RIGHT_CTRL, 0, 14, 6);
+	const Key CTRL_RIGHT = Key("Ctrl Right", KEY_RIGHT_CTRL, 0, 13, 6);
 	const Key INS = Key("Insert", KEY_INSERT, 4, 15, 14);
 	const Key DEL = Key("Delete", KEY_DELETE, 3, 15, 14);
 	const Key ENTER = Key("Enter", KEY_ENTER, 2, 13, 12);
