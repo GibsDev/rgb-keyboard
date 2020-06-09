@@ -1,3 +1,8 @@
+#include <Arduino.h>
+
+#ifndef KEYS_HEADER_GUARD
+#define KEYS_HEADER_GUARD
+
 typedef void (*void_function_t)();
 
 class Key
@@ -150,4 +155,4 @@ namespace Keys
 	// const Key SCROLL_LOCK = Key("Scroll Lock");
 } // namespace keycodes
 
-extern const Key KEYS[2];
+#endif
