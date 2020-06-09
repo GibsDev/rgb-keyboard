@@ -1,11 +1,16 @@
 class Key {
     public:
-    const char* NAME;
-    unsigned char KEYCODE;
+    const char* name;
+    unsigned char keycode;
+    // unsigned int ROW
+    // unsigned int COLUMN_SWITCH
+    // unsigned int COLUMN_LED
 
     Key(const char* name, unsigned int keycode){
-        NAME = name;
-        KEYCODE = keycode;
+        name
+ = name
+;
+        keycode = keycode;
     }
 };
 
@@ -13,7 +18,7 @@ void onKeyPressed(int row, int col);
 void onKeyReleased(int row, int col);
 
 // The keycodes for existing keys, not necessarily corrolated to a symbol
-namespace KeyCodes
+namespace keycodes
 {
     const Key ALT = Key("Alt", 18);
     const Key ARROW_DOWN = Key("Arrow Down", 40);
@@ -113,7 +118,7 @@ namespace KeyCodes
     const Key BACKQUOTE = Key("Backquote (`)", 192);
     const Key EQUALS = Key("Equals (=)", 187);
     const Key OS = Key("OS", 91);
-} // namespace Keys
+} // namspace Keys
 
 
 extern const Key KEYS[2];

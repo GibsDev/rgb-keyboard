@@ -74,6 +74,15 @@ uint32_t hsl(uint16_t ih, uint8_t is, uint8_t il) {
 	return ((uint32_t)r << 16) | ((uint32_t)g <<  8) | b;
 }
 
+// Note: this is based on LED index (not the same as scan index as above)
+uint32_t FUNCTION_MODE_COLORS[6][17] = {
+    {0, 0, 0, 0, 0, 0xFF0000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFFFFFF, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0x00FF00, 0x00FF00, 0, 0, 0xFFFFFF, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+};
 
 // Array of all LED strips
 Adafruit_NeoPixel LEDS[] = {
@@ -135,10 +144,18 @@ void set_color(uint32_t color ) {
 	}
 }
 
+void set_color(int row, int col, uint32_t color) {
+	LEDS[row].fill(color, col, 1);
+}
+
 void backlight_loop() {
-	if(function_mode) { // 0 12
-		LEDS[0].fill(RED, 5, 1);
-		LEDS[0].show();
+	if(function_mode) {
+		for (int row = 0; row < STRIP_COUNT; row++) {
+			for (int col = 0; col < 17; col++) {
+				LEDS[row].fill(FUNCTION_MODE_COLORS[row][col], col, 1);
+			}
+			LEDS[row].show();
+	}
 	} else {
 		set_color(color);
 	}
@@ -160,3 +177,5 @@ void set_brightness(uint8_t b) {
 void set_function_mode(bool enabled) {
 	function_mode = enabled;
 }
+
+// TODO try to isolate the functions that call LEDS[i].show(), and try to do only 1 row per backlight update loop. This way more CPU time can be used by scanning buttons. If this creates a noticable visual animation, probably not worth it.
