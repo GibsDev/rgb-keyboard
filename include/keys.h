@@ -3,13 +3,15 @@
 #ifndef KEYS_HEADER_GUARD
 #define KEYS_HEADER_GUARD
 
+// Function key
+const uint16_t KEY_FUNCTION = (116 | 0xF000);
+// Does not exist
+const uint16_t KEY_NULL = 0;
+
 void keys_setup();
-void volume_up_press();
-void volume_up_release();
-void volume_down_press();
-void volume_down_release();
 void increase_brightness();
 void decrease_brightness();
+void num_lock();
 void toggle_os();
 
 typedef void (*void_function_t)();
@@ -25,6 +27,7 @@ public:
 	void_function_t function_press;
 	void_function_t function_release;
 	uint32_t function_color;
+	uint16_t function_bind;
 
 	// Used for empty array initialization
 	Key() { this->name = NULL; }
@@ -37,9 +40,10 @@ public:
 		this->col_switch = col_switch;
 		this->col_led = col_led;
 		this->function_color = 0x000000;
+		this->function_bind = KEY_NULL;
 	}
 
-	Key(const char *name, uint16_t keycode, uint8_t row, uint8_t col_switch, uint8_t col_led, void_function_t function_press, void_function_t function_release, uint32_t function_color) {
+	Key(const char *name, uint16_t keycode, uint8_t row, uint8_t col_switch, uint8_t col_led, void_function_t function_press, void_function_t function_release, uint32_t function_color, uint16_t function_bind) {
 		this->name = name;
 		this->keycode = keycode;
 		this->row = row;
@@ -48,6 +52,7 @@ public:
 		this->function_press = function_press;
 		this->function_release = function_release;
 		this->function_color = function_color;
+		this->function_bind = function_bind;
 	}
 
 	bool valid() {
@@ -58,19 +63,14 @@ public:
 void onKeyPressed(int row, int col);
 void onKeyReleased(int row, int col);
 
-// Function key
-const uint16_t KEY_FUNCTION = (116 | 0xF000);
-// Does not exist
-const uint16_t KEY_DNE = 0;
-
 // Physically available keys
 namespace Keys
 {
 	const Key ALT_LEFT = Key("Alt Left", KEY_LEFT_ALT, 0, 2, 2);
-	const Key ALT_RIGHT = Key("Alt Right", KEY_RIGHT_ALT, 0, 11, 4);
-	const Key ARROW_DOWN = Key("Arrow Down", KEY_DOWN_ARROW, 0, 15, 8);
-	const Key ARROW_LEFT = Key("Arrow Left", KEY_LEFT_ARROW, 0, 14, 7);
-	const Key ARROW_RIGHT = Key("Arrow Right", KEY_RIGHT_ARROW, 0, 16, 9);
+	const Key ALT_RIGHT = Key("Alt Right", KEY_RIGHT_ALT, 0, 11, 4, NULL, NULL, 0xFF00FF, KEY_0);
+	const Key ARROW_DOWN = Key("Arrow Down", KEY_DOWN_ARROW, 0, 15, 8, NULL, NULL, 0x0000FF, KEY_MEDIA_PLAY_PAUSE);
+	const Key ARROW_LEFT = Key("Arrow Left", KEY_LEFT_ARROW, 0, 14, 7, NULL, NULL, 0x0000FF, KEY_MEDIA_PREV_TRACK);
+	const Key ARROW_RIGHT = Key("Arrow Right", KEY_RIGHT_ARROW, 0, 16, 9, NULL, NULL, 0x0000FF, KEY_MEDIA_NEXT_TRACK);
 	const Key ARROW_UP = Key("Arrow Up", KEY_UP_ARROW, 1, 15, 12);
 	const Key BACKSPACE = Key("Backspace", KEY_BACKSPACE, 4, 13, 13);
 	const Key CAPS_LOCK = Key("Caps Lock", KEY_CAPS_LOCK, 2, 0, 0);
@@ -92,8 +92,8 @@ namespace Keys
 	const Key F10 = Key("F10", KEY_F10, 5, 12, 10);
 	const Key F11 = Key("F11", KEY_F11, 5, 13, 11);
 	const Key F12 = Key("F12", KEY_F12, 5, 14, 12);
-	const Key PAGE_DOWN = Key("Page Down", KEY_PAGE_DOWN, 3, 16, 15, decrease_brightness, NULL, 0xFFFFFF);
-	const Key PAGE_UP = Key("Page Up", KEY_PAGE_UP, 4, 16, 15, increase_brightness, NULL, 0xFFFFFF);
+	const Key PAGE_DOWN = Key("Page Down", KEY_PAGE_DOWN, 3, 16, 15, decrease_brightness, NULL, 0xFFFFFF, KEY_NULL);
+	const Key PAGE_UP = Key("Page Up", KEY_PAGE_UP, 4, 16, 15, increase_brightness, NULL, 0xFFFFFF, KEY_NULL);
 	const Key PAUSE = Key("Pause", KEY_PAUSE, 5, 15, 13);
 	const Key PRINT_SCRN = Key("Print Scrn", KEY_PRINTSCREEN, 5, 16, 14);
 	const Key SHIFT_LEFT = Key("Shift", KEY_LEFT_SHIFT, 1, 0, 0);
@@ -108,14 +108,14 @@ namespace Keys
 	const Key F = Key("F", KEY_F, 2, 4, 4);
 	const Key G = Key("G", KEY_G, 2, 5, 5);
 	const Key H = Key("H", KEY_H, 2, 6, 6);
-	const Key I = Key("I", KEY_I, 3, 8, 8);
+	const Key I = Key("I", KEY_I, 3, 8, 8, NULL, NULL, 0xFF00FF, KEY_7);
 	const Key J = Key("J", KEY_J, 2, 7, 7);
-	const Key K = Key("K", KEY_K, 2, 8, 8);
-	const Key L = Key("L", KEY_L, 2, 9, 9);
+	const Key K = Key("K", KEY_K, 2, 8, 8, NULL, NULL, 0xFF00FF, KEY_4);
+	const Key L = Key("L", KEY_L, 2, 9, 9, NULL, NULL, 0xFF00FF, KEY_5);
 	const Key M = Key("M", KEY_M, 1, 8, 7);
 	const Key N = Key("N", KEY_N, 1, 7, 6);
-	const Key O = Key("O", KEY_O, 3, 9, 9);
-	const Key P = Key("P", KEY_P, 3, 10, 10);
+	const Key O = Key("O", KEY_O, 3, 9, 9, NULL, NULL, 0xFF00FF, KEY_8);
+	const Key P = Key("P", KEY_P, 3, 10, 10, NULL, NULL, 0xFF00FF, KEY_9);
 	const Key Q = Key("Q", KEY_Q, 3, 1, 1);
 	const Key R = Key("R", KEY_R, 3, 4, 4);
 	const Key S = Key("S", KEY_S, 2, 2, 2);
@@ -137,18 +137,19 @@ namespace Keys
 	const Key NUM_8 = Key("8", KEY_8, 4, 8, 8);
 	const Key NUM_9 = Key("9", KEY_9, 4, 9, 9);
 	const Key APOSTROPHE = Key("Apostrophe (')", KEY_QUOTE, 2, 11, 11);
-	const Key MINUS = Key("Minus (-)", KEY_MINUS, 4, 11, 11, volume_down_press, volume_down_release, 0x00FF00);
-	const Key COMMA = Key("Comma (,)", KEY_COMMA, 1, 9, 8);
-	const Key PERIOD = Key("Period (.)", KEY_PERIOD, 1, 10, 9);
-	const Key FORWARD_SLASH = Key("Forward Slash (/)", KEY_SLASH, 1, 11, 10);
-	const Key SEMI_COLON = Key("Semi Colon (;)", KEY_SEMICOLON, 2, 10, 10);
+	const Key MINUS = Key("Minus (-)", KEY_MINUS, 4, 11, 11, NULL, NULL, 0x00FF00, KEY_MEDIA_VOLUME_DEC);
+	const Key COMMA = Key("Comma (,)", KEY_COMMA, 1, 9, 8, NULL, NULL, 0xFF00FF, KEY_1);
+	const Key PERIOD = Key("Period (.)", KEY_PERIOD, 1, 10, 9, NULL, NULL, 0xFF00FF, KEY_2);
+	const Key FORWARD_SLASH = Key("Forward Slash (/)", KEY_SLASH, 1, 11, 10, NULL, NULL, 0xFF00FF, KEY_3);
+	const Key SEMI_COLON = Key("Semi Colon (;)", KEY_SEMICOLON, 2, 10, 10, NULL, NULL, 0xFF00FF, KEY_6);
 	const Key LEFT_BRACE = Key("Left Brace ([)", KEY_LEFT_BRACE, 3, 11, 11);
 	const Key RIGHT_BRACE = Key("Right Brace (])", KEY_RIGHT_BRACE, 3, 12, 12);
 	const Key BACKSLASH = Key("Backslash (\\)", KEY_BACKSLASH, 3, 13, 13);
 	const Key TILDE = Key("Tilde (`)", KEY_TILDE, 4, 0, 0);
-	const Key EQUALS = Key("Equals (=)", KEY_EQUAL, 4, 12, 12, volume_up_press, volume_up_release, 0x00FF00);
-	const Key OS = Key("OS", KEY_LEFT_GUI, 0, 1, 1, toggle_os, NULL, 0xFF0000);
-	const Key FUNCTION = Key("Function", KEY_FUNCTION, 0, 12, 5, NULL, NULL, 0xFF0000);
+	const Key EQUALS = Key("Equals (=)", KEY_EQUAL, 4, 12, 12, NULL, NULL, 0x00FF00, KEY_MEDIA_VOLUME_INC);
+	const Key OS = Key("OS", KEY_LEFT_GUI, 0, 1, 1, toggle_os, NULL, 0xFF0000, KEY_NULL);
+	// Should we disable all modifier keys when entering function mode?
+	const Key FUNCTION = Key("Function", KEY_FUNCTION, 0, 12, 5, NULL, NULL, 0xFF0000, KEY_NULL);
 	const Key ALL[83] = {
 		ALT_LEFT, ALT_RIGHT, ARROW_DOWN, ARROW_LEFT, ARROW_RIGHT, ARROW_UP,
 		BACKSPACE, CAPS_LOCK, CTRL_LEFT, CTRL_RIGHT, INS, DEL, ENTER, ESC,

@@ -21,22 +21,6 @@ void toggle_os() {
 	set_os_enabled(OS_ENABLED);
 }
 
-void volume_up_press() {
-	Keyboard.press(KEY_MEDIA_VOLUME_INC);
-}
-
-void volume_up_release() {
-	Keyboard.release(KEY_MEDIA_VOLUME_INC);
-}
-
-void volume_down_press() {
-	Keyboard.press(KEY_MEDIA_VOLUME_DEC);
-}
-
-void volume_down_release() {
-	Keyboard.release(KEY_MEDIA_VOLUME_DEC);
-}
-
 void increase_brightness() {
 	int brightness = get_brightness();
 	brightness++;
@@ -51,9 +35,17 @@ void decrease_brightness() {
 	}
 }
 
+void num_lock() {
+	Keyboard.press(KEY_NUM_LOCK);
+	Keyboard.release(KEY_NUM_LOCK);
+}
+
 
 void onKeyPressed(int row, int col) {
 	if (FUNCTION_MODE) {
+		if (keys[row][col].function_bind != KEY_NULL) {
+			Keyboard.press(keys[row][col].function_bind);
+		}
 		if (keys[row][col].function_press != NULL) {
 			keys[row][col].function_press();
 			return;
@@ -76,6 +68,9 @@ void onKeyPressed(int row, int col) {
 
 void onKeyReleased(int row, int col) {
 	if (FUNCTION_MODE) {
+		if (keys[row][col].function_bind != KEY_NULL) {
+			Keyboard.release(keys[row][col].function_bind);
+		}
 		if (keys[row][col].function_release != NULL) {
 			keys[row][col].function_release();
 		}

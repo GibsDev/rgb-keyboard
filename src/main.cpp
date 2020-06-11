@@ -36,7 +36,7 @@ void readKeys () {
 				}
 			}
 			digitalWrite(ROW_PINS[row], HIGH); // Disable GND for this row
-			delayMicroseconds(1);
+			delayMicroseconds(2);
 			index++;
 		}
 	}
