@@ -11,8 +11,6 @@ void keys_setup() {
 	}
 }
 
-// TODO turn LDR arrow keys into PREV, PAUSE/PLAY, NEXT
-
 bool FUNCTION_MODE = false;
 
 bool OS_ENABLED = true;

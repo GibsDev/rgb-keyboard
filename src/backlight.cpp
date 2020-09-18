@@ -3,6 +3,9 @@
 #include "backlight.h"
 #include "keys.h"
 
+// For keyboard indicator LED variable
+#include "usb_keyboard.h"
+
 #define STRIP_COUNT 6
 #define DEFAULT_BRIGHTNESS 3
 #define MAX_BRIGHTNESS 25 // Not sure what a good limit here is (could overdraw current from USB if too high)
@@ -49,6 +52,7 @@ uint32_t RED = 0xFF0000;
 uint32_t NATURAL_WHITE = 0xFFFFBB;
 uint32_t GREEN = 0x00FF00;
 uint32_t GOLD = 0xFF9900;
+uint32_t CAPS_ENABLED_COLOR = 0xFF00FF;
 
 uint32_t color = GOLD;
 
@@ -78,6 +82,9 @@ void set_color(uint32_t color)
 	{
 		LEDS[row].fill(color, 0, 0);
 		Serial.printf("os_enabled: %d\n", os_enabled);
+		if (row == Keys::CAPS_LOCK.row && (keyboard_leds & 0x2)) {
+			LEDS[row].fill(CAPS_ENABLED_COLOR, Keys::CAPS_LOCK.col_led, 1);
+		}
 		if (row == Keys::OS.row && !os_enabled) {
 			Serial.println("os enabled, turning off LED");
 			LEDS[row].fill(0x000000, Keys::OS.col_led, 1);
