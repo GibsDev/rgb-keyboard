@@ -7,7 +7,7 @@
 #include "usb_keyboard.h"
 
 #define STRIP_COUNT 6
-#define DEFAULT_BRIGHTNESS 3
+#define DEFAULT_BRIGHTNESS 2
 #define MAX_BRIGHTNESS 25 // Not sure what a good limit here is (could overdraw current from USB if too high)
 
 #if DEFAULT_BRIGHTNESS > MAX_BRIGHTNESS
@@ -50,11 +50,13 @@ uint8_t get_brightness()
 
 uint32_t RED = 0xFF0000;
 uint32_t NATURAL_WHITE = 0xFFFFBB;
+uint32_t WHITE = 0xFFFFFF;
 uint32_t GREEN = 0x00FF00;
 uint32_t GOLD = 0xFF9900;
-uint32_t CAPS_ENABLED_COLOR = 0xFF00FF;
+uint32_t MAGENTA = 0xFF00FF;
+uint32_t CAPS_ENABLED_COLOR = WHITE;
 
-uint32_t color = GOLD;
+uint32_t color = RED;
 
 void backlight_setup()
 {
